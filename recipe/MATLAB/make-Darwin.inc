@@ -1,15 +1,23 @@
-# make.inc for Mac with x86_64 version of MATLAB.
+# make.inc for Mac with x86_64 or arm64 version of MATLAB.
 # We assume matlab, mex, and gfortran are in the path.
 
 SYSTEM       = Darwin
-MACHINE      = x86_64
+ARCH         = $(shell uname -m)
 
-
-MATLABROOT  := $(shell dirname $(shell dirname `which matlab`))
-GCCROOT     := $(shell dirname $(shell dirname `which gfortran`))
+# Detect architecture and set MACHINE and MATLABROOT accordingly
+ifeq ($(ARCH), x86_64)
+    MACHINE      = x86_64
+    MATLABROOT  := $(shell dirname $(shell dirname `which matlab`))
+    LIBFORT      = -L$(shell dirname $(shell dirname `which gfortran`))/lib -lgfortran -L$(MATLABROOT)/sys/os/maci64 -liomp5
+else ifeq ($(ARCH), arm64)
+    MACHINE      = arm64
+    MATLABROOT  := $(shell dirname $(shell dirname `which matlab`))
+    LIBFORT      = -L$(shell dirname $(shell dirname `which gfortran`))/lib -lgfortran -L$(MATLABROOT)/bin/maca64 -lomp
+else
+    $(error Unsupported architecture: $(ARCH))
+endif
 
 MEX          = mex
-LIBFORT      = -L$(GCCROOT)/lib -lgfortran -L$(MATLABROOT)/sys/os/maci64 -liomp5
 
 # Main MUMPS_DIR
 topdir = ..
@@ -27,4 +35,4 @@ LORDERINGS = $(LPORD) $(LMETIS)
 LIBBLAS = -L$(install_libdir) -lopenblas LDFLAGS='-Wl,-no_compact_unwind $$LDFLAGS'
 
 # extra options passed via mex command
-OPTC    = -g -I$(install_incdir)
+OPTC    = -g -I$(install_incdir) -I$(topdir)/include

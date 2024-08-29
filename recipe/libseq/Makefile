@@ -20,7 +20,7 @@ libmpiseq$(PLAT)$(LIBEXT): mpi.o mpic.o elapse.o
 	cp $@ $(install_libdir)
 
 .f.o:
-	$(FC) $(OPTF)              -c $*.f $(OUTF)$*.o
+	$(FC) $(OPTF) -c $*.f $(OUTF)$*.o
 .c.o:
 	$(CC) $(OPTC) $(CDEFS) -I. -c $*.c $(OUTC)$*.o
 
