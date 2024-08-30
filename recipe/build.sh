@@ -48,6 +48,10 @@ if [ "${SYSTEM}" = 'Darwin' -a -z "${ARCH_CMD}" ]; then
         # Set ARCH_CMD based on MATLAB architecture
         if [ "${ARCH}" = 'arm64' ] && [ "${MATLAB_ARCH}" = 'x86_64' ]; then
             ARCH_CMD="arch -x86_64"
+            if [ -z "$(file `which gfortran` | grep x86_64)" ]; then
+                echo "Error: MATLAB is for x86_64 but gfortran is not installed for x86_64 architecture."
+                exit 1
+            fi
         fi
     else
         echo "Error: MATLAB not found in the path."
