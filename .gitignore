@@ -17,3 +17,4 @@ recipe/lib/*
 MUMPS/
 MUMPS_*/
 *.tar.gz
+.DS_Store
